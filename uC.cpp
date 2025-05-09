@@ -1,3 +1,4 @@
+
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <util/delay.h>
@@ -160,20 +161,23 @@ uint32_t duration(uint32_t timeout) {
 
 uint32_t MeasureInCentimeters(uint32_t timeout) {
 	uint32_t dur = duration(timeout);
-	return dur ; // speed of sound approximation (us to cm)
+	return dur*0.29/2 ; // speed of sound approximation (us to cm)
 }
 
 // ------------------- Main Program -------------------
 int main(void) {
-	char buffer[16];
-	timer1_init();           // Initialize Timer1 for micros()
-TWI_init();
+	
+		char buffer[16];
+		timer1_init();           // Initialize Timer1 for micros()
+		TWI_init();
 		LCD_init();
-	while (1) {
+		while (1) {
 		uint32_t range_cm = MeasureInCentimeters(1000000);  // 1s timeout
 		
 		
 		snprintf(buffer, sizeof(buffer), "Range: %u cm", (unsigned int)range_cm);
+		LCD_setCursor(0, 0);
+		LCD_print("                     ");
 		LCD_setCursor(0, 0);
 		LCD_print(buffer);
 		LCD_setCursor(0, 1);
